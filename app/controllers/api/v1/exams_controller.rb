@@ -1,12 +1,19 @@
 module Api
   module V1
     class ExamsController < ApplicationController
+      RESCUEABLE_ERRORS = [ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound, ActionController::BadRequest]
+
       def show
         begin
           user = User.find_or_create_user(user_params)
-          exam = Exam.find(params[:id])
+          college = College.find(params[:college_id])
+          exam = college.exams.find(params[:id])
+
+          start_time = params[:start_time].to_datetime
+          raise ActionController::BadRequest unless exam.start_window <= start_time && exam.end_window >= start_time
+
           render json: exam
-        rescue ActiveRecord::RecordInvalid => e
+        rescue *RESCUEABLE_ERRORS => e
           render json: { error: 'Invalid exam parameters' }, status: 400
         end
       end
@@ -19,19 +26,3 @@ module Api
     end
   end
 end
-
-# {  
-
-#     first_name: String, 
-  
-#     last_name: String, 
-  
-#     phone_number: String, 
-  
-#     college_id: Integer, 
-  
-#     exam_id: Integer, 
-  
-#     start_time: DateTime 
-  
-#   }  

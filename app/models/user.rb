@@ -8,7 +8,6 @@ class User < ApplicationRecord
   def self.find_or_create_user(user_params)
     user = User.find_by(user_params)
     return user if user.present?
-    
     user = User.create!(user_params)
 
 
