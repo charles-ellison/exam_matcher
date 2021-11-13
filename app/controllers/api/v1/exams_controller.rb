@@ -2,15 +2,19 @@ module Api
   module V1
     class ExamsController < ApplicationController
       def show
-        user = User.find_or_create_user(user_params)
-
-        render json: user
+        begin
+          user = User.find_or_create_user(user_params)
+          exam = Exam.find(params[:id])
+          render json: exam
+        rescue ActiveRecord::RecordInvalid => e
+          render json: { error: 'Invalid exam parameters' }, status: 400
+        end
       end
 
       private 
 
       def user_params
-        params.permit(:first_name, :last_name, :college_id, :phone_number)
+        params.permit(:first_name, :last_name, :phone_number)
       end
     end
   end

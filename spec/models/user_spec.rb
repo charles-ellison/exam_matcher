@@ -58,19 +58,46 @@ RSpec.describe User, type: :model do
   describe 'find_or_create_user' do
     context 'when a user is found with the given params' do
       it 'returns the user' do
+        user_params = { first_name: 'bob' }
+        user = User.new
+
+        allow(User).to receive(:find_by)
+          .with(user_params)
+          .and_return(user)
         
+        expect(User.find_or_create_user(user_params)).to eq user
       end
     end
 
     context 'when the user is not found with the given params' do
       it 'creates a new user' do
+        user_params = { first_name: 'bob' }
+        user = User.new
+
+        allow(User).to receive(:find_by)
+          .with(user_params)
+          .and_return(nil)
         
+        allow(User).to receive(:new)
+          .with(user_params)
+          .and_return(user)
+
+        expect(User).to receive(:create!)
+          .and_return(user)
+
+        actual = User.find_or_create_user(user_params)
+        
+        expect(actual).to eq user
       end
     end
     
     context 'when the user is invalid' do
       it 'raises an exception' do
+        user_params = { first_name: 'bob' }
         
+        expect {
+          User.find_or_create_user(user_params)
+        }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end

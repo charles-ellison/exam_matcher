@@ -2,18 +2,22 @@ class User < ApplicationRecord
   validates_presence_of :first_name
   validates_presence_of :last_name
   validate :validate_phone_number
+  has_many :user_exams
+  has_many :exams, through: :user_exams
 
   def self.find_or_create_user(user_params)
     user = User.find_by(user_params)
     return user if user.present?
     
-    user = User.new(user_params)
+    user = User.create!(user_params)
+
+
     
-    if user.save
-      user
-    else
-      raise ActionController::BadRequest.new('Invalid exam parameters')
-    end
+    # if user.save
+    #   user
+    # else
+    #   raise ActionController::BadRequest.new('Invalid exam parameters')
+    # end
   end
 
   private

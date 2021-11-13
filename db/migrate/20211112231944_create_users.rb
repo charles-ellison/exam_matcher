@@ -4,7 +4,6 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :first_name
       t.string :last_name
       t.string :phone_number
-      t.integer :college_id
       t.timestamps
     end
   end
