@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_13_013003) do
+ActiveRecord::Schema.define(version: 2021_11_13_184641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "api_requests", force: :cascade do |t|
+    t.string "status"
+    t.string "message"
+    t.integer "exam_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "colleges", force: :cascade do |t|
     t.string "name"
@@ -21,12 +29,18 @@ ActiveRecord::Schema.define(version: 2021_11_13_013003) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "exams", force: :cascade do |t|
-    t.integer "college_id"
-    t.datetime "start_window"
-    t.datetime "end_window"
+  create_table "exam_windows", force: :cascade do |t|
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "exams", force: :cascade do |t|
+    t.integer "college_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "exam_window_id"
   end
 
   create_table "user_exams", force: :cascade do |t|
